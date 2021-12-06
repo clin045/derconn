@@ -14,11 +14,13 @@ def test_derivtive_ratios():
     vox_tss = [np.random.rand(240) for x in range(5)]
     func = interpolate.UnivariateSpline
     result = dc.derivative_ratios(roi_ts, vox_tss, func)
-    print(result)
+    return result
 
-
-
+def test_avg_ratios(ratios):
+    return dc.avg_ratios(ratios)
 
 if __name__=="__main__":
     test_fit_curve()
-    test_derivtive_ratios()
+    ratios = test_derivtive_ratios()
+    avg_vec = test_avg_ratios(ratios)
+    print(avg_vec)

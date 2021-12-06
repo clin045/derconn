@@ -23,3 +23,7 @@ def derivative_ratios(roi_ts, vox_tss, f):
         for vidx, v in enumerate(vox_curves):
             ratios[vidx, i] = roi_curve(i) / v(i)
     return ratios
+
+def avg_ratios(ratios):
+    avg_vec = np.mean(ratios, axis=0)
+    return avg_vec
