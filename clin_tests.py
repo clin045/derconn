@@ -9,8 +9,16 @@ def test_fit_curve():
     func = interpolate.UnivariateSpline
     result = dc.fit_curve(roi_ts, vox_tss, func)
 
+def test_derivtive_ratios():    
+    roi_ts = np.random.rand(240)
+    vox_tss = [np.random.rand(240) for x in range(5)]
+    func = interpolate.UnivariateSpline
+    result = dc.derivative_ratios(roi_ts, vox_tss, func)
+    print(result)
+
 
 
 
 if __name__=="__main__":
     test_fit_curve()
+    test_derivtive_ratios()
