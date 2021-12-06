@@ -2,8 +2,6 @@ import numpy as np
 import nibabel as nib
 from nilearn import image, input_data
 from nimlab import datasets as nimds
-from scipy import optimize
-from scipy import misc
 
 def test_function():
     print("This is a test!")
