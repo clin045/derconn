@@ -25,5 +25,5 @@ def derivative_ratios(roi_ts, vox_tss, f):
     return ratios
 
 def avg_ratios(ratios):
-    avg_vec = np.mean(ratios, axis=0)
+    avg_vec = np.mean(ratios, axis=1)
     return avg_vec
