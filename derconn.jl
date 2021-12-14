@@ -1,9 +1,19 @@
-using PyCall, Interpolations, ForwardDiff, ProgressMeter, Statistics
+using PyCall, Interpolations, ForwardDiff, ProgressMeter, Statistics, Plots
 
 function run_tests()
     roi_ts = rand(240)
     vox_tss = [rand(240) for x in 1:280000]
     ratios = derivative_ratios(roi_ts, vox_tss)
+end
+
+function lineseg(x0,y0,slope)
+    xs = []
+    ys = []
+    for j in -0.5:0.1:0.5
+        push!(xs, x0+j)
+        push!(ys, y0+(j*slope))
+    end
+    return xs, ys
 end
 
 function main()
@@ -28,6 +38,7 @@ function fit_curve(roi_ts, vox_tss)
     @showprogress for i in 1:size(vox_tss)[2]
         vox_curves[i] = f(1:length(roi_ts),vox_tss[:,i])
     end
+    
     return roi_curve, vox_curves
 end
 
@@ -38,6 +49,11 @@ function derivative_ratios(roi_ts, vox_tss)
     println(size(vox_tss))
     println("calculating derivative ratios")
     (roi_curve, vox_curves) = fit_curve(roi_ts, vox_tss)
+    ENV["GKSwstype"] = "100"
+    plot(1:0.5:240.0,[roi_curve(i) for i in 1:0.5:240.0])
+    #plot!(1:240,[roi_ts[i] for i in 1:240],seriestype = :scatter)
+    
+    
     ratios = zeros(size(vox_tss)[2], length(roi_ts))
     println("Take roi derivative")
     roi_ders = [ForwardDiff.derivative(roi_curve, t) for t in 1:length(roi_ts)]
@@ -48,6 +64,12 @@ function derivative_ratios(roi_ts, vox_tss)
         rat = roi_ders ./ vox_ders
         ratios[vidx,:] = rat
     end
+
+    for i in 1:240
+        (segx, segy) = lineseg(i, roi_ts[i], roi_ders[i])
+        plot!(segx, segy)
+    end
+    savefig("plot.svg")
     return ratios
 
 end
