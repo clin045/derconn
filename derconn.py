@@ -15,7 +15,7 @@ def extract_ts(roi_path, rs_path):
     roi_dat = roi_img.get_fdata()
     rs = np.load(rs_path)
 
-    MNI_brain_mask = nimds.get_img("MNI152_T1_2mm_brain_mask")
+    MNI_brain_mask = nimds.get_img("MNI152_T1_2mm_brain_mask_dil")
     brain_masker = input_data.NiftiMasker(MNI_brain_mask)
     roi_msk = brain_masker.fit_transform(roi_img)
     roi_msk = np.repeat(roi_msk, rs.shape[0], axis = 0)
@@ -24,8 +24,15 @@ def extract_ts(roi_path, rs_path):
     roi_ts = np.mean(rs_mskd, 1)
     vox_tss = rs
 
-
     return roi_ts, vox_tss
+
+def write_vec_to_file(vec, outpath):
+    MNI_brain_mask = nimds.get_img("MNI152_T1_2mm_brain_mask_dil")
+    brain_masker = input_data.NiftiMasker(MNI_brain_mask).fit()
+    img = brain_masker.inverse_transform(vec)
+    img.to_filename(outpath)
+    
+
 
 def fit_curve(roi_ts, vox_tss, f):
     print("fitting curves")
